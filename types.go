@@ -43,6 +43,7 @@ const (
 
 	// Array of variable length character data.
 	ArrayVarchar = "array(varchar)"
+	decimal = "decimal(19,6)"
 )
 
 type stmtResponse struct {

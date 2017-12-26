@@ -1,3 +1,4 @@
+
 package prestgo
 
 import (
@@ -228,7 +229,8 @@ func (r *rows) fetch() error {
 					r.types[i] = varbinaryConverter
 				case col.Type == ArrayVarchar:
 					r.types[i] = arrayVarcharConverter
-
+				case col.Type == decimal:
+					r.types[i] = decimalVarcharConverter
 				default:
 					return fmt.Errorf("unsupported column type: %s", col.Type)
 				}
@@ -504,4 +506,14 @@ var arrayVarcharConverter = valueConverterFunc(func(val interface{}) (driver.Val
 	}
 
 	return nil, fmt.Errorf("%s: failed to convert %v (%T) into type []string", DriverName, val, val)
+})
+var decimalVarcharConverter = valueConverterFunc(func(val interface{} )(driver.Value, error){
+	if val == nil {
+		return nil, nil
+	}
+	if value, ok := val.(string); ok {
+		return value, nil
+	}
+
+	return nil, fmt.Errorf("%s: failed to convert %v (%T) into type string", DriverName, val, val)
 })
